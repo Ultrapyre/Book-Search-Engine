@@ -31,4 +31,4 @@ const TypeDefs = gql`
     }
 `
 
-module.exports = typeDefs;
+module.exports = TypeDefs;
