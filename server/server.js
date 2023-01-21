@@ -26,6 +26,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 //app.use(routes);
+//The homepage is sent forward here, since the routes folder is now redundant.
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 //Starts up the Apollo Server, as well as the other stuff that was already there.
 const startApolloServer = async (typeDefs, resolvers) => {
