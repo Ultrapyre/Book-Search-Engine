@@ -1,5 +1,4 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 import { useQuery , useMutation } from '@apollo/client';
 // import { getMe, deleteBook } from '../utils/API';
@@ -9,16 +8,13 @@ import { GET_ME } from '../utils/queries'
 import { REMOVE_BOOK } from '../utils/mutations'
 
 const SavedBooks = () => {
-  //const [userData, setUserData] = useState({});
-  const { userId: userParam } = useParams();
-  const [deleteBook , {error}] = useMutation(REMOVE_BOOK)
+  const [deleteBook, {error}] = useMutation(REMOVE_BOOK);
 
-  const { loading, userData } = useQuery(GET_ME, {
-    variable: { userId: userParam }
-  })
+  const {data} = useQuery(GET_ME)
+  let userData
 
-  if (!userData) {
-    throw new Error('something went wrong!');
+  if(data){
+    userData = data.me
   }
 
   // todo: Use the useMutation() Hook to execute the REMOVE_BOOK mutation in the handleDeleteBook() function 
@@ -53,7 +49,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (loading) {
+  if (!userData) {
     return <h2>LOADING...</h2>;
   }
 
