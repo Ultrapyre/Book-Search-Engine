@@ -49,7 +49,7 @@ const resolvers = {
           throw new AuthenticationError('No user found with this email address!')
         }
 
-        const correctPw = user.IsCorrectPassword(password)
+        const correctPw = user.isCorrectPassword(password)
 
         if(!correctPw){
           throw new AuthenticationError('Wrong credientals!')

@@ -36,7 +36,7 @@ const LoginForm = () => {
       const token = mutationResponse.data.login.token;
 
       if (error) {
-        throw new Error('something went wrong!');
+         throw new Error('something went wrong!');
       }
 
       //const { token, user } = await response.json();
