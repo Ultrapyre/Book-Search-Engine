@@ -76,9 +76,7 @@ const SearchBooks = () => {
 
     try {
       //const response = await saveBook(bookToSave, token);
-      const mutationResponse = await saveBook({
-        variables: bookToSave})
-
+      const mutationResponse = await saveBook({variables: {book: bookToSave}})
       if (error) {
         throw new Error('something went wrong!');
       }
