@@ -17,10 +17,6 @@ const SavedBooks = () => {
     userData = data.me
   }
 
-  // todo: Use the useMutation() Hook to execute the REMOVE_BOOK mutation in the handleDeleteBook() function 
-  // instead of the deleteBook() function that's imported from API file. 
-  // (Make sure you keep the removeBookId() function in place!)
-
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -30,7 +26,7 @@ const SavedBooks = () => {
     }
 
     try {
-      //const response = await deleteBook(bookId, token);
+      //Note: This appears to generate warnings due to useState being unceremoniously removed.
       const mutationResponse = await deleteBook({
         variables: {bookId: bookId}
       })
@@ -39,9 +35,6 @@ const SavedBooks = () => {
         throw new Error('something went wrong!');
       }
 
-      //const updatedUser = await response.json();
-      //setUserData(updatedUser);
-      // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
       console.error(err);
