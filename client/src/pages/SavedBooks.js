@@ -1,45 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
-
+import { useQuery , useMutation } from '@apollo/client';
 // import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
-import { getMe } from '../utils/queries'
-import { deleteBook } from '../utils/mutations'
+import { GET_ME } from '../utils/queries'
+import { REMOVE_BOOK } from '../utils/mutations'
 
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({});
+  //const [userData, setUserData] = useState({});
+  const { userId: userParam } = useParams();
+  const [deleteBook , {error}] = useMutation(REMOVE_BOOK)
 
-  // use this to determine if `useEffect()` hook needs to run again
-  const userDataLength = Object.keys(userData).length;
+  const { loading, userData } = useQuery(GET_ME, {
+    variable: { userId: userParam }
+  })
 
-  //todo: Remove the useEffect() Hook that sets the state for UserData.
-  //Instead, use the useQuery() Hook to execute the GET_ME query on load and save it to a variable named userData.
-
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-        if (!token) {
-          return false;
-        }
-
-        const response = await getMe(token);
-
-        if (!response.ok) {
-          throw new Error('something went wrong!');
-        }
-
-        const user = await response.json();
-        setUserData(user);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    getUserData();
-  }, [userDataLength]);
+  if (!userData) {
+    throw new Error('something went wrong!');
+  }
 
   // todo: Use the useMutation() Hook to execute the REMOVE_BOOK mutation in the handleDeleteBook() function 
   // instead of the deleteBook() function that's imported from API file. 
@@ -54,14 +34,17 @@ const SavedBooks = () => {
     }
 
     try {
-      const response = await deleteBook(bookId, token);
+      //const response = await deleteBook(bookId, token);
+      const mutationResponse = await deleteBook({
+        variables: {bookId: bookId}
+      })
 
-      if (!response.ok) {
+      if (error) {
         throw new Error('something went wrong!');
       }
 
-      const updatedUser = await response.json();
-      setUserData(updatedUser);
+      //const updatedUser = await response.json();
+      //setUserData(updatedUser);
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
@@ -70,7 +53,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
 
